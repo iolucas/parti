@@ -7,10 +7,10 @@ function renderExample() {
 
 	var chordExample = new Parti.Chord();
 	chordExample
-		.setDuration('2')
-		.addNote({ note: 'G', octave: '4' })
-		.addNote({ note: 'B', octave: '4' })
-		.addNote({ note: 'D', octave: '4' });
+		.setDuration('4');
+		//.addNote({ note: 'G', octave: '4' })
+		//.addNote({ note: 'B', octave: '4' })
+		//.addNote({ note: 'D', octave: '4' });
 
 	var measureExample = new Parti.Measure();
 

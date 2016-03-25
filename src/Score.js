@@ -26,6 +26,8 @@ Parti.Score = function() {
 		var scoreLines = [];
 		var scoreLinesIndex = -1;	//Start index with -1 to initiate it correcly
 
+		//keep adding render features, such notes, rests, beams, slurs etc
+
 
 		//Iterate thru staffs and measures and populate score lines array
 		for (var i = 0; i < staffs.length; i++) {
@@ -46,16 +48,18 @@ Parti.Score = function() {
 							throw 'Invalid Chord: No clef has been set to the staff yet';
 
 						var chordKeys = [];
-						var chordDuration = memberData.getDuration();
+						var chordDuration = getDurationName(memberData.getDuration());
 
 						memberData.foreach(function(noteData) {
 							chordKeys.push(noteData.note + "/" + noteData.octave);
 						});
 
+						var isRest = chordKeys.length == 0;
+
 						measureMembers.push(new Vex.Flow.StaveNote({ 
 							clef: currentClef,
-							keys: chordKeys, 
-							duration: getDurationName(chordDuration),
+							keys: isRest ? [getCenterString(currentClef)] : chordKeys, 
+							duration: isRest ? chordDuration + 'r' : chordDuration,
 							auto_stem: true
 						}));
 
@@ -185,22 +189,24 @@ Parti.Score = function() {
 				var notePlacedFlag = false;
 
 				measureData.foreach(function(memberData, firstMember, lastMember) {
-
+					//TODO: Use the same data generated for the line to avoid process same thing twice
 					if(memberData.name == 'chord') {
 
 						notePlacedFlag = true;
 
 						var chordKeys = [];
-						var chordDuration = memberData.getDuration();
+						var chordDuration = getDurationName(memberData.getDuration());
 
 						memberData.foreach(function(noteData) {
 							chordKeys.push(noteData.note + "/" + noteData.octave);
 						});
 
+						var isRest = chordKeys.length == 0;
+
 						measureMembers.push(new Vex.Flow.StaveNote({ 
 							clef: currentClef,
-							keys: chordKeys, 
-							duration: getDurationName(chordDuration),
+							keys: isRest ? [getCenterString(currentClef)] : chordKeys, 
+							duration: isRest ? chordDuration + 'r' : chordDuration,
 							auto_stem: true
 						}));
 
@@ -342,5 +348,64 @@ Parti.Score = function() {
 			default:
 				return barObj.NONE;
 		}
+	}
+
+	//Function to get the 
+	function getCenterString(clef) {
+
+		var centerNote = 'b/4';
+
+		switch(clef) {
+
+    		case "treble":
+				//centerNote = 'b/4';
+				break;
+
+    		case "bass":
+				centerNote = 'd/3';
+				break;
+
+    		case "alto":
+				centerNote = 'c/4';
+				break;
+
+    		case "tenor":
+				centerNote = 'a/3';
+				break;
+
+    		case "percussion":
+				//centerNote = 'b/4';
+				break;
+
+    		case "soprano":
+				centerNote = 'g/4';
+				break;
+
+    		case "mezzo-soprano":
+				centerNote = 'e/4';
+				break;
+
+    		case "baritone-c":
+				centerNote = 'f/3';
+				break;
+
+    		case "baritone-f":
+				centerNote = 'f/3';
+				break;
+
+    		case "subbass":
+				centerNote = 'b/2';
+				break;
+
+    		case "french":
+				centerNote = 'd/5';
+				break;
+
+    		//case "tab":
+				//centerNote = 'b/4';
+				//break;
+		}
+
+		return centerNote;
 	}
 }
