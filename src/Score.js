@@ -1,3 +1,4 @@
+
 Parti.Score = function() {
 
 	var staffs = [];
@@ -25,9 +26,6 @@ Parti.Score = function() {
 
 		var scoreLines = [];
 		var scoreLinesIndex = -1;	//Start index with -1 to initiate it correcly
-
-		//keep adding render features, such notes, rests, beams, slurs etc
-
 
 		//Iterate thru staffs and measures and populate score lines array
 		for (var i = 0; i < staffs.length; i++) {
@@ -165,7 +163,7 @@ Parti.Score = function() {
 
 				//Place the time signature
 				var measureTimeSig = measureData.getTimeSignature();
-				if(measureTimeSig != currentTime) {
+				if(measureTimeSig && measureTimeSig != currentTime) {
 
 					currentTime = measureTimeSig;
 
@@ -197,18 +195,47 @@ Parti.Score = function() {
 						var chordKeys = [];
 						var chordDuration = getDurationName(memberData.getDuration());
 
+						//Queue to hold note accidents to be added at once
+						var accidentalQueue = [];
+						var accNoteIndex = 0;
+
 						memberData.foreach(function(noteData) {
 							chordKeys.push(noteData.note + "/" + noteData.octave);
+							
+							//Push the accidental to the queue if some
+							if(noteData.accidental) {
+								accidentalQueue.push({
+									index: accNoteIndex,
+									accidental: getAccidentalLetter(noteData.accidental.type),
+									cautionary: noteData.accidental.cautionary
+								});
+							}
+
+							accNoteIndex++;
 						});
 
 						var isRest = chordKeys.length == 0;
 
-						measureMembers.push(new Vex.Flow.StaveNote({ 
+						var staveNote = new Vex.Flow.StaveNote({ 
 							clef: currentClef,
 							keys: isRest ? [getCenterString(currentClef)] : chordKeys, 
 							duration: isRest ? chordDuration + 'r' : chordDuration,
 							auto_stem: true
-						}));
+						});
+
+						//Add the queued accidentals to the stave note
+						for (var accIndex = 0; accIndex < accidentalQueue.length; accIndex++) {
+							var acc = accidentalQueue[accIndex];
+
+							var accObj = new Vex.Flow.Accidental(acc.accidental);
+
+							if(acc.cautionary)
+								accObj.setAsCautionary();
+
+							staveNote.addAccidental(acc.index, accObj);
+						}
+
+						measureMembers.push(staveNote);
 
 					} else if(memberData.name == 'clef') {
 
@@ -407,5 +434,63 @@ Parti.Score = function() {
 		}
 
 		return centerNote;
+	}
+
+	function getAccidentalLetter(acc) {
+		switch(acc) {
+
+			case 'sharp':
+  				return "#";
+
+  			case 'double-sharp':
+ 				return "##";
+
+ 			case 'sharp-sharp':
+ 				return "##";
+
+ 			case 'flat':
+				return "b";
+
+			case 'flat-flat':
+				return "bb";
+
+			case 'natural':
+				return "n";
+
+
+			//return "{"; {   // Left paren for cautionary accidentals
+
+			//return "}"; {   // Right paren for cautionary accidentals
+
+			/*case 'sharp':
+				return "db";
+
+			case 'sharp':
+				return "d";
+
+			case 'sharp':
+				return "bbs";
+
+			case 'sharp':
+				return "++";
+
+			case 'sharp':
+				return "+";
+
+			case 'sharp':
+				return "+-";
+
+			case 'sharp':
+				return "++-";
+
+			case 'sharp':
+				return "bs";
+
+			case 'sharp':
+				return "bss";*/
+
+			default:
+				throw 'Accidental not implemented: ' + acc;
+		}
 	}
 }

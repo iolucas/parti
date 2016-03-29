@@ -23,9 +23,9 @@
         </style>
     </head>
     <body>
+        <input type="file" id="files"/><br>
         <canvas width='1500' height='1000'></canvas>
-        <br>
-        <input type="file" id="files"/><br><br><br>
+        <br><br><br>
         <div id="resultXml">Result XML</div>
         <div id="resultJson">Result JSON</div>
         <script src="http://code.jquery.com/jquery-1.12.0.min.js"></script>
@@ -34,7 +34,7 @@
         <script src="releases/parti.js"></script>
         <script>
         
-            renderExample();
+            //renderExample();
 
             document.getElementById("files").addEventListener("change", function(evt) {
                 var file = evt.target.files[0]; // FileList object
@@ -43,7 +43,7 @@
                     document.getElementById("resultXml").innerText = fileContent; 
                     var mJson = MusicXmlConverter.toJson(fileContent);
                     document.getElementById("resultJson").innerText = JSON.stringify(mJson, null, "_"); 
-                    renderScore2(mJson);
+                    renderScore(mJson);
                 });
                 
             });

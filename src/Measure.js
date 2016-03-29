@@ -14,7 +14,7 @@ Parti.Measure = function() {
 		return self;
 	}
 
-	var _timeSignature = '4/4';
+	var _timeSignature;
 	this.setTimeSignature = function(timeSig) {
 		_timeSignature = timeSig;
 		return self;			

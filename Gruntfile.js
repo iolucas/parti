@@ -18,7 +18,9 @@ module.exports = function(grunt) {
             'src/renderStaff.js',
             'src/renderMeasure.js',
 
-            'src/renderExample.js'
+            'src/renderExample.js',
+
+            'src/todolist.js'
 
           ], //select all javascript files of the src folder
 

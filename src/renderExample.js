@@ -7,7 +7,7 @@ function renderExample() {
 
 	var chordExample = new Parti.Chord();
 	chordExample
-		.setDuration('4');
+		.setDuration('1');
 		//.addNote({ note: 'G', octave: '4' })
 		//.addNote({ note: 'B', octave: '4' })
 		//.addNote({ note: 'D', octave: '4' });
@@ -17,7 +17,7 @@ function renderExample() {
 	var clefExample = new Parti.Clef('treble');
 
 	measureExample
-		.setTimeSignature('4/4')
+		.setTimeSignature('3/8')
 		.addMember(clefExample)
 		.addMember(new Parti.Key('G'))
 		.addMember(chordExample)
