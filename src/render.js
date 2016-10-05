@@ -167,7 +167,7 @@ function getKeyName(keyVal) {
 }
 
 function getDurationName(durationValue) {
-
+		console.log(durationValue);
 	switch(durationValue) {
 
 		case 1:
